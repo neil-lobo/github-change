@@ -1,0 +1,60 @@
+#!/usr/bin/env node
+
+const accounts = require("./accounts.json")
+const { exec } = require("child_process");
+const fs = require("fs");
+const path = require('node:path');
+let changeConfig = false;
+let status = false;
+let args = process.argv;
+args.shift();
+args.shift();
+
+for(let i = 0; i < args.length; i++) {
+    if (args[i] == "-s") { //status
+        status = true;
+        break;
+    }
+    else if (args[i] == "-c") { //set git config
+        args.splice(i, 1);
+        changeConfig = true;
+    }
+}
+
+if (args.length == 0) {
+    let data = fs.readFileSync(path.join(__dirname,"ssh_account"), {encoding:'utf8', flag:'r'})
+    args.push(data)
+}
+
+// exit if account not found
+if (!accounts[args[0]] && !status) {
+    console.log("Account name: '" + args[0] + "' not found")
+    process.exit(1);
+}
+
+let account = accounts[args[0]];
+let execStr;
+
+if (status) {
+    execStr = `ssh-add -l && git config --global user.name && git config --global user.email`
+} else {
+    execStr = `ssh-add -D && ssh-add ${account.ssh}`
+    if (changeConfig) {
+        execStr += ` && git config --global user.name "${account.user.name}" && git config --global user.email "${account.user.email}" && echo Updated git config`
+    }
+}
+
+exec(execStr, (error, stdout, stderr) => {
+    if (error) {
+        console.error(`exec error: ${error}`);
+        return;
+    }
+    console.log(stdout);
+    if (stderr) {
+        console.error(`stderr: ${stderr}`);
+    }
+
+    if (!status) {
+        fs.writeFileSync(path.join(__dirname,"ssh_account"), args[0])
+    }
+});
