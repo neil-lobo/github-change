@@ -1,0 +1,16 @@
+{
+    "user1": {
+        "user": {
+            "name": "[name]",
+            "email": "[email]"
+        },
+        "ssh": "~/.ssh/user1"
+    },
+    "user2": {
+        "user": {
+            "name": "[name]",
+            "email": "[email]"
+        },
+        "ssh": "[path to ssh key]"
+    }
+}
