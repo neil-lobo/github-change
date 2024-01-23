@@ -38,7 +38,7 @@ let execStr;
 if (status) {
     execStr = `ssh-add -l && git config --global user.name && git config --global user.email`
 } else {
-    execStr = `ssh-add -D && ssh-add ${account.ssh}`
+    execStr = `ssh-add -D && ssh-add ${account.ssh} && git config --global gpg.format ssh && git config --global user.signingkey ${account.ssh}`
     if (changeConfig) {
         execStr += ` && git config --global user.name "${account.user.name}" && git config --global user.email "${account.user.email}" && echo Updated git config`
     }
