@@ -11,7 +11,7 @@ cd github-change/src
 chmod u+x github-change
 ```
 
-3. Add `github-change` to your `PATH` variable
+3. Add `src` to your `PATH` variable
 
 4. Create `src/accounts.json` file
     - Follow `src/example.accounts.json` file
